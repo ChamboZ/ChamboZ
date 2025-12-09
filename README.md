@@ -2,7 +2,6 @@
 
 ### AI-driven computational chemist focusing on molecular modelling, machine learning, and high-performance computing
 
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=ChamboZ&label=Profile views&color=0e75b6&style=flat" alt="ChamboZ" /> </p>
 
 - 🔭 I'm currently working on **A large-scale ML workflow for reaction outcome prediction and molecular property modelling, integrating PyTorch, HPC pipelines, and chemical informatics.**
 
