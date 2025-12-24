@@ -46,9 +46,10 @@ class Boltz2Wrapper(nn.Module):
         try:
             # Attempt typical import path. Adjust this line if needed.
             from boltz.models.boltz2 import Boltz2Model  # type: ignore
-
+            print("[MODEL] Using Boltz2Model from boltz.models.boltz2")
             return Boltz2Model()
-        except Exception:
+        except Exception as e:
+            print(f"[MODEL] Falling back to DummyBoltzModel because boltz import failed: {e}")
             return DummyBoltzModel(self.config.vocab_size, self.config.hidden_dim)
 
     def forward(self, inputs: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
