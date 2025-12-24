@@ -1,0 +1,44 @@
+seed: 42
+run_name: default_run
+output_dir: outputs
+method: sft_lora
+
+model:
+  vocab_size: 32
+  hidden_dim: 128
+
+data:
+  targets_dir: data/boltz_rcsb/targets
+  msa_dir: data/boltz_rcsb/msa
+  symmetry_path: data/boltz_rcsb/symmetry.pkl
+  max_items: 0
+  use_synthetic: false
+  synthetic_size: 256
+
+training:
+  batch_size: 4
+  lr: 1.0e-3
+  max_steps: 200
+  grad_accum_steps: 1
+  max_grad_norm: 1.0
+  use_amp: false
+  log_every: 10
+  save_every: 100
+  resume_path: null
+  loss_type: cross_entropy
+  dry_run: false
+
+lora:
+  r: 8
+  alpha: 16.0
+  dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "out_proj", "mlp", "proj"]
+
+acceptance:
+  max_nan: 0
+  max_loss_slope: 1.0
+  min_reward_std: 0.01
+
+grpo:
+  num_candidates: 4
+  kl_coef: 0.1
