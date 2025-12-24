@@ -1,24 +1,24 @@
 # Boltz-2 Unified Training Framework
 
-Minimal, production-clean training framework supporting:
+Minimal, clean training framework supporting:
 - **SFT with LoRA adapters**
 - **GRPO (Group-Relative Policy Optimization)**
 
 This repository is designed to wrap the official Boltz-2 model when available, and falls back to a tiny dummy model for smoke tests and debugging.
 
-## Quickstart
+## Quickstart (Windows Command Prompt)
 
 ```cmd
 python -m pip install torch pyyaml tqdm
 ```
 
-### Download Boltz RCSB data (Windows Command Prompt)
+### Download Boltz RCSB data
 
 ```cmd
 scripts\download_boltz_rcsb.bat
 ```
 
-### Smoke tests (Windows Command Prompt)
+### Smoke tests
 
 ```cmd
 scripts\smoke_test_sft.bat
