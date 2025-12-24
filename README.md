@@ -8,21 +8,34 @@ This repository is designed to wrap the official Boltz-2 model when available, a
 
 ## Quickstart
 
-```bash
+```powershell
 python -m pip install torch pyyaml tqdm
 ```
 
-### Download Boltz RCSB data
+### Download Boltz RCSB data (Windows)
 
-```bash
-bash scripts/download_boltz_rcsb.sh
+PowerShell:
+```powershell
+.\scripts\download_boltz_rcsb.ps1
 ```
 
-### Smoke tests
+Command Prompt:
+```cmd
+scripts\download_boltz_rcsb.bat
+```
 
-```bash
-bash scripts/smoke_test_sft.sh
-bash scripts/smoke_test_grpo.sh
+### Smoke tests (Windows)
+
+PowerShell:
+```powershell
+.\scripts\smoke_test_sft.ps1
+.\scripts\smoke_test_grpo.ps1
+```
+
+Command Prompt:
+```cmd
+scripts\smoke_test_sft.bat
+scripts\smoke_test_grpo.bat
 ```
 
 Smoke tests write acceptance reports:
