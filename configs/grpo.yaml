@@ -1,0 +1,17 @@
+method: grpo
+run_name: grpo_smoke
+training:
+  max_steps: 200
+  batch_size: 2
+  log_every: 5
+  save_every: 100
+  dry_run: false
+
+data:
+  use_synthetic: true
+  synthetic_size: 128
+  max_items: 0
+
+grpo:
+  num_candidates: 4
+  kl_coef: 0.05

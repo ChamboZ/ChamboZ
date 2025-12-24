@@ -1,0 +1,14 @@
+method: sft_lora
+run_name: sft_lora_smoke
+training:
+  max_steps: 200
+  batch_size: 4
+  log_every: 5
+  save_every: 100
+  loss_type: cross_entropy
+  dry_run: false
+
+data:
+  use_synthetic: true
+  synthetic_size: 128
+  max_items: 0

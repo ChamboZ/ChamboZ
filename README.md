@@ -1,28 +1,96 @@
-# Hi 👋, I'm ChamboZ
+# Boltz-2 Unified Training Framework
 
-### AI-driven computational chemist focusing on molecular modelling, machine learning, and high-performance computing
+Minimal, clean training framework supporting:
+- **SFT with LoRA adapters**
+- **GRPO (Group-Relative Policy Optimization)**
 
+This repository is designed to wrap the official Boltz-2 model when available, and falls back to a tiny dummy model for smoke tests and debugging.
 
-- 🔭 I'm currently working on **A large-scale ML workflow for reaction outcome prediction and molecular property modelling, integrating PyTorch, HPC pipelines, and chemical informatics.**
+## Quickstart (Linux/macOS)
 
-- 🌱 I'm currently learning **Advanced deep learning architectures, scientific computing, and automated chemistry workflows.
-Special interest: surrogate modelling, molecular representation learning, and large-scale optimisation.**
+```bash
+python -m pip install torch pyyaml tqdm
+```
 
-- 👯 I'm looking to collaborate on **Open-source projects in computational chemistry, molecular machine learning, chemical data pipelines, and HPC-accelerated model training.**
+### Download Boltz RCSB data
 
-- 🤝 I'm looking for help with **Designing scalable ML systems for chemistry, robust data-splitting strategies, and model reproducibility on distributed HPC environments.**
+```bash
+bash scripts/download_boltz_rcsb.sh
+```
 
-- 💬 Ask me about **Molecular ML, PyTorch training pipelines, HPC (Slurm, Frontier, job arrays), chemical structure processing, SMILES workflows, and reaction prediction models.**
+### Smoke tests
 
-- 📫 How to reach me **zccahcq@ucl.ac.uk**
+```bash
+bash scripts/smoke_test_sft.sh
+bash scripts/smoke_test_grpo.sh
+```
 
-- ⚡ Fun fact **I learn very fast.**
+Smoke tests write acceptance reports:
+- `reports/acceptance_sft.json`
+- `reports/acceptance_grpo.json`
 
-<h3 align="left">Connect with me:</h3>
-<p align="left">
-<a href="https://github.com/ChamboZ" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg" alt="ChamboZ" height="30" width="40" /></a>
-</p>
+Acceptance thresholds are configured in `configs/base.yaml` under `acceptance:`:
+- `max_nan`
+- `max_loss_slope`
+- `min_reward_std` (GRPO only)
 
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://developer.mozilla.org/en-US/docs/Web/anaconda" target="_blank" rel="noreferrer"> <img src="https://skillicons.dev/icons?i=anaconda" alt="anaconda" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/git" target="_blank" rel="noreferrer"> <img src="https://skillicons.dev/icons?i=git" alt="git" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/huggingface" target="_blank" rel="noreferrer"> <img src="https://cdn.simpleicons.org/huggingface" alt="huggingface" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/jupyter" target="_blank" rel="noreferrer"> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original-wordmark.svg" alt="jupyter" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/langchain" target="_blank" rel="noreferrer"> <img src="https://cdn.simpleicons.org/langchain/1C3C3C" alt="langchain" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/matplotlib" target="_blank" rel="noreferrer"> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg" alt="matplotlib" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/numpy" target="_blank" rel="noreferrer"> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg" alt="numpy" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/ollama" target="_blank" rel="noreferrer"> <img src="https://cdn.simpleicons.org/ollama" alt="ollama" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/pandas" target="_blank" rel="noreferrer"> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" alt="pandas" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/python" target="_blank" rel="noreferrer"> <img src="https://skillicons.dev/icons?i=py" alt="python" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/pytorch" target="_blank" rel="noreferrer"> <img src="https://skillicons.dev/icons?i=pytorch" alt="pytorch" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/scikit_learn" target="_blank" rel="noreferrer"> <img src="https://skillicons.dev/icons?i=scikitlearn" alt="scikit_learn" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/tensorflow" target="_blank" rel="noreferrer"> <img src="https://skillicons.dev/icons?i=tensorflow" alt="tensorflow" width="40" height="40"/> </a></p>
+## Structure
 
+```
+src/
+  engine/          # Trainer engine, checkpointing, logging
+  data/            # Dataset adapters + collate
+  models/          # Boltz-2 wrapper + LoRA
+  strategies/      # SFT and GRPO strategies
+  rewards/         # Reward proxy
+  eval/            # Acceptance report generation
+configs/           # YAML configs
+scripts/           # Download + smoke tests
+```
+
+## Configuration
+
+- `configs/base.yaml` defines common settings (output dir, model params, training defaults).
+- `configs/sft_lora.yaml` overrides for SFT.
+- `configs/grpo.yaml` overrides for GRPO.
+
+`configs/base.yaml` includes data paths for:
+
+```
+data/boltz_rcsb/targets
+  data/boltz_rcsb/msa
+  data/boltz_rcsb/symmetry.pkl
+```
+
+## Boltz-2 model integration
+
+`src/models/boltz2_wrapper.py` attempts to import the Boltz-2 model:
+
+```python
+from boltz.models.boltz2 import Boltz2Model
+```
+
+If your local Boltz-2 repo uses a different import path, **edit that one line**. The wrapper will map outputs to `{"logits": ..., "pred": ...}`.
+
+### Dry-run wiring
+Set `training.dry_run: true` in a config to print tensor shapes for inputs/outputs and confirm wiring.
+
+## Unified batch schema
+
+Every dataset adapter emits:
+
+```python
+{
+  "inputs": dict(tensors),
+  "targets": dict(tensors),
+  "meta": dict(metadata),
+}
+```
+
+Strategies only consume this schema and **never access raw dataset objects**.
+
+## Notes
+
+- LoRA adapters are applied to module name patterns in `configs/base.yaml`.
+- SFT uses a placeholder loss (cross-entropy or MSE). Replace TODOs in `src/strategies/sft_lora.py` with true Boltz objectives.
+- GRPO uses a cheap reward proxy in `src/rewards/reward_proxy.py` and logs reward stats + KL mean.
